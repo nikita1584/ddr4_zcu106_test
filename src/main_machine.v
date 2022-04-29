@@ -62,13 +62,14 @@ module main_machine(
 	(* mark_debug = "true" *)reg [3:0]main_rd_sm;
 
 	(* mark_debug = "true" *)reg rd_en;
-	(* mark_debug = "true" *)wire steam_rd_end;
+	(* mark_debug = "true" *)wire stream_rd_end;
 	(* mark_debug = "true" *)reg [7:0]rd_stream_num;
 	(* mark_debug = "true" *)reg [7:0]rd_stream_num_d;
 	
 	(* mark_debug = "true" *)reg [15:0]rd_64b_counter;
 	(* mark_debug = "true" *)wire [15:0]rd_boundary_4k;
 	(* mark_debug = "true" *)reg [7:0]rd_burst_length;
+	reg [3:0]arid;
 
 	//reg [15:0]wr_boundary_4k_reg;
 	//reg [15:0]wr_burst_length_4k_reg;
@@ -103,7 +104,7 @@ module main_machine(
 		else if((main_wr_sm == S_INC_STR_WR) && (wr_iter_num == 8'h0))
 			wr_stream_num <= wr_stream_num + 8'h01;
 		else if((main_wr_sm == S_INC_STR_WR) && (wr_iter_num != wr_iter_num_d))
-			wr_stream_num <= random[6:0] + random[3:0] + 1;
+			wr_stream_num <= random[6:0] + random[10:7] + random[11];
 		wr_stream_num_d <= wr_stream_num;
 	end
 	//-----------------------------------------------------------
@@ -118,51 +119,25 @@ module main_machine(
 	// count of burst transmissions
 	always @(posedge clk)
 	begin
-		//ok!
 		if(reset)
 			wr_burst_length <= 8'h01;
 		else if(wr_finish && ((wr_boundary_4k - wr_64b_counter) <= (WRITE_BURST_LEN / 8)) && (wr_64b_counter > 0))
-			//wr_burst_length <= wr_boundary_4k % wr_64b_counter;
 			wr_burst_length <= wr_boundary_4k - wr_64b_counter;
 		else if(wr_finish && ((stream_size - wr_64b_counter) <= (WRITE_BURST_LEN / 8)) && (wr_64b_counter != stream_size))
 			wr_burst_length <= stream_size - wr_64b_counter;
 		else if(wr_finish)// | ((main_wr_sm == S_IDLE_WR) && (main_wr_sm_ns == S_DIR_WR)))
 			wr_burst_length <= random[2:0] + 'd1;//1 - 8
-			//wr_burst_length <= (random[2:0] + 'd1)*(WRITE_BURST_LEN / 8);//8 - 64
-		/*
-		if(reset)
-			wr_burst_length <= 8'h0;
-		else if(adr_neg_d && ((wr_boundary_4k_reg - wr_64b_counter) <= (WRITE_BURST_LEN / 8)) && (wr_64b_counter > 0))
-			wr_burst_length <= wr_burst_length_4k_reg;
-		else if(adr_neg_d && ((stream_size - wr_64b_counter) <= (WRITE_BURST_LEN / 8)) && (wr_64b_counter != stream_size))
-			wr_burst_length <= stream_size - wr_64b_counter;
-		else if(adr_neg_d | ((main_wr_sm == S_IDLE_WR) && (main_wr_sm_ns == S_DIR_WR)))
-			wr_burst_length <= random[2:0] + 'd1;//1 - 8
-			//wr_burst_length <= (random[2:0] + 'd1)*(WRITE_BURST_LEN / 8);//8 - 64
-		*/
 	end
 	//-----------------------------------------------------------
 	always @(posedge clk)
 	begin
 		if(reset)
 			wr_64b_counter <= 12'h00;
-		//else if(main_wr_sm_ns == S_INC_STR_WR)//(stream_num != stream_num_d)
 		else if((main_wr_sm == S_INC_STR_WR) || steam_wr_end)//(stream_num != stream_num_d)
 			wr_64b_counter <= 12'h00;
 		else if(wlast)//
 			wr_64b_counter <= wr_64b_counter + wr_burst_length;
 	end
-	//-----------------------------------------------------------
-	/*
-	always @(posedge clk)
-	begin
-		if(reset || (wr_stream_num != wr_stream_num_d))
-			wr_addr <= 32'h0;
-		else if(wr_finish)
-			wr_addr <= (wr_addr + wr_burst_length) |
-				(wr_stream_num << (STREAM_ADDR_SHIFT + STREAM_ADDR_OFFSET));
-	end
-	*/
 	//-----------------------------------------------------------
 	always @(posedge clk)
 	begin
@@ -200,27 +175,63 @@ module main_machine(
 	end
 
 	//----------------------READ---------------------------------
-	assign steam_rd_end = (rd_64b_counter == (stream_size - (READ_BURST_LEN / 64))) && rd_finish;
+	assign stream_rd_end = ((rd_64b_counter + rd_burst_length) == stream_size) && rd_finish;
+	//assign stream_rd_end = 0;
 	assign rd_addr = ((rd_64b_counter * 8) << 3) | (rd_stream_num << (STREAM_ADDR_SHIFT + STREAM_ADDR_OFFSET));
 	assign rd_boundary_4k = 16'h040 * ((rd_64b_counter + rd_burst_length) / 16'h040 + 16'h0001);
 	//-----------------------------------------------------------
 	
 	always @(posedge clk)
 	begin
-		if(reset || (rd_stream_num != rd_stream_num_d) || (rd_boundary_4k - rd_64b_counter == 'h040))
+		if(reset || (rd_stream_num != rd_stream_num_d))
+			rd_burst_length <= READ_BURST_LEN / 64;
+		else if(rd_finish && (rd_addr[17:0] == 18'h37F00))
+			rd_burst_length <= 8'h10;
+		else if(rd_finish && (rd_boundary_4k - rd_64b_counter - rd_burst_length == 'h040))
 			rd_burst_length <= READ_BURST_LEN / 64;
 		else if(rd_finish && ((rd_boundary_4k - rd_64b_counter - READ_BURST_LEN / 64) <= (READ_BURST_LEN / 64)) && (rd_64b_counter > 0))
 			rd_burst_length <= rd_boundary_4k - rd_64b_counter - READ_BURST_LEN / 64;
 	end
 	
+	/*
+	always @(posedge clk)
+	begin
+		if(reset)
+			rd_burst_length <= 8'h14;
+		else if(rd_finish && (rd_addr[17:0] == 18'h37F00))
+			rd_burst_length <= 8'h10;
+		else if(rd_finish && ((arid == 4'h2) || (arid == 4'h6) || (arid == 4'ha) || (arid == 4'he)))
+			rd_burst_length <= 8'h4;
+		else if(rd_finish)
+			rd_burst_length <= 8'h14;
+	end
+	*/
+	
+	/*
+	assign rd_burst_length = ()
+		else if(rd_finish && (rd_addr[17:0] == 18'h38000))
+			rd_burst_length <= 8'h10;
+		else if(rd_finish && ((arid == 4'h3) || (arid == 4'h7) || (arid == 4'hb) || (arid == 4'hf)))
+			rd_burst_length <= 8'h4;
+		else if(rd_finish)
+			rd_burst_length <= 8'h10;
+			*/
+	//-----------------------------------------------------------
+	always @(posedge clk)
+	begin
+		if(reset)
+			arid <= 4'h0;
+		else if(rd_finish)
+			arid <= arid + 4'h1;
+	end
 	//-----------------------------------------------------------
 	always @(posedge clk)
 	begin
 		if(reset)// || (wr_iter_num != wr_iter_num_d))
 			rd_stream_num <= 8'h0;
-		else if(steam_rd_end && (rd_stream_num < N_READ_STREAMS - 1))
+		else if(stream_rd_end && (rd_stream_num < N_READ_STREAMS - 1))
 			rd_stream_num <= rd_stream_num + 8'h01;
-		else if(steam_rd_end && (rd_stream_num >= N_READ_STREAMS - 1))
+		else if(stream_rd_end && (rd_stream_num >= N_READ_STREAMS - 1))
 			rd_stream_num <= 8'h0;
 		rd_stream_num_d <= rd_stream_num;
 	end
@@ -229,7 +240,7 @@ module main_machine(
 	begin
 		if(reset)
 			rd_64b_counter <= 12'h00;
-		else if((main_rd_sm == S_INC_STR_RD) || steam_rd_end)
+		else if((main_rd_sm == S_INC_STR_RD) || stream_rd_end)
 			rd_64b_counter <= 12'h00;
 		else if(rd_finish)
 			rd_64b_counter <= rd_64b_counter + rd_burst_length;
@@ -257,7 +268,7 @@ module main_machine(
 				if(rd_en)
 					main_rd_sm_ns = S_DIR_RD;
 			S_DIR_RD:
-				if(steam_rd_end)
+				if(stream_rd_end)
 					main_rd_sm_ns = S_INC_STR_RD;
 			S_INC_STR_RD:
 					main_rd_sm_ns = S_DIR_RD;
@@ -280,3 +291,4 @@ module main_machine(
 	);		
 
 endmodule
+

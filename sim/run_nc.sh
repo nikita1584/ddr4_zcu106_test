@@ -8,6 +8,7 @@ ncverilog +access+rwc +gui +sv +define+SIM +incdir+../ddr4_0_ex/ddr4_0_ex.ip_use
 	../src/speed_tester.v \
 	../src/ext_memory_test.v \
 	axi_mem_target.v \
+	axi_target_bfm.v \
 	test_ram.v \
 	../ddr4_0_ex/ddr4_0_ex.srcs/sources_1/ip/axi_clock_converter_0/sim/axi_clock_converter_0.v \
 	../ddr4_0_ex/ddr4_0_ex.ip_user_files/ipstatic/hdl/axi_infrastructure_v1_1_vl_rfs.v \

@@ -35,14 +35,6 @@ set id [waveform add -signals [subst  {
 set id [waveform add -signals [subst  {
 	{[format {ddr4_test.ext_memory_test_blk.main_machine_blk.wr_boundary_4k[11:0]}]}
 	} ]]
-waveform hierarchy expand $id
-set id2 [lindex [waveform hierarchy content $id] 12]
-waveform format $id2 -radix %b
-set id2 [lindex [waveform hierarchy content $id] 13]
-waveform format $id2 -radix %b
-set id2 [lindex [waveform hierarchy content $id] 15]
-waveform format $id2 -radix %b
-waveform hierarchy collapse $id
 set id [waveform add -signals [subst  {
 	{[format {ddr4_test.ext_memory_test_blk.main_machine_blk.wr_boundary_4k[11:0]}]}
 	} ]]
@@ -71,47 +63,17 @@ set id [waveform add -signals [subst  {
 	{[format {ddr4_test.ext_memory_test_blk.main_machine_blk.rd_en}]}
 	} ]]
 set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.main_machine_blk.steam_rd_end}]}
-	} ]]
-set id [waveform add -signals [subst  {
 	{[format {ddr4_test.ext_memory_test_blk.main_machine_blk.rd_stream_num[7:0]}]}
 	} ]]
 set id [waveform add -signals [subst  {
 	{[format {ddr4_test.ext_memory_test_blk.main_machine_blk.rd_stream_num_d[7:0]}]}
 	} ]]
 set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.main_machine_blk.rd_64b_counter[15:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.main_machine_blk.rd_boundary_4k[15:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.main_machine_blk.rd_burst_length[7:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
 	{[format {ddr4_test.ext_memory_test_blk.main_machine_blk.wr_64b_counter[11:0]}]}
 	} ]]
-waveform hierarchy expand $id
-set id2 [lindex [waveform hierarchy content $id] 8]
-waveform format $id2 -radix %b
-set id2 [lindex [waveform hierarchy content $id] 9]
-waveform format $id2 -radix %b
-set id2 [lindex [waveform hierarchy content $id] 14]
-waveform format $id2 -radix %b
-set id2 [lindex [waveform hierarchy content $id] 15]
-waveform format $id2 -radix %b
-waveform hierarchy collapse $id
 set id [waveform add -signals [subst  {
 	{[format {ddr4_test.ext_memory_test_blk.main_machine_blk.wr_burst_length[3:0]}]}
 	} ]]
-waveform hierarchy expand $id
-set id2 [lindex [waveform hierarchy content $id] 5]
-waveform format $id2 -radix %b
-set id2 [lindex [waveform hierarchy content $id] 6]
-waveform format $id2 -radix %b
-set id2 [lindex [waveform hierarchy content $id] 7]
-waveform format $id2 -radix %b
-waveform hierarchy collapse $id
 set id [waveform add -signals [subst  {
 	{[format {ddr4_test.ext_memory_test_blk.main_machine_blk.steam_wr_end}]}
 	} ]]
@@ -127,7 +89,6 @@ set id [waveform add -signals [subst  {
 set id [waveform add -signals [subst  {
 	{[format {ddr4_test.ext_memory_test_blk.write_stream_gen_blk.burst_length[7:0]}]}
 	} ]]
-waveform hierarchy collapse $id
 set id [waveform add -signals [subst  {
 	{[format {ddr4_test.ext_memory_test_blk.AWID[3:0]}]}
 	} ]]
@@ -171,19 +132,16 @@ set id [waveform add -signals [subst  {
 	{[format {ddr4_test.ext_memory_test_blk.BREADY}]}
 	} ]]
 set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.AWBURST[1:0]}]}
+	{[format {ddr4_test.ext_memory_test_blk.main_machine_blk.rd_boundary_4k[15:0]}]}
 	} ]]
 set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.AWLOCK[1:0]}]}
+	{[format {ddr4_test.ext_memory_test_blk.main_machine_blk.rd_burst_length[7:0]}]}
 	} ]]
 set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.AWCACHE[3:0]}]}
+	{[format {ddr4_test.ext_memory_test_blk.main_machine_blk.rd_64b_counter[15:0]}]}
 	} ]]
 set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.AWPROT[2:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.WSTRB[63:0]}]}
+	{[format {ddr4_test.ext_memory_test_blk.main_machine_blk.stream_rd_end}]}
 	} ]]
 set id [waveform add -signals [subst  {
 	{[format {ddr4_test.ext_memory_test_blk.ARID[3:0]}]}
@@ -196,18 +154,6 @@ set id [waveform add -signals [subst  {
 	} ]]
 set id [waveform add -signals [subst  {
 	{[format {ddr4_test.ext_memory_test_blk.ARSIZE[2:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.ARBURST[1:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.ARLOCK[1:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.ARCACHE[3:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.ARPROT[2:0]}]}
 	} ]]
 set id [waveform add -signals [subst  {
 	{[format {ddr4_test.ext_memory_test_blk.ARVALID}]}
@@ -240,119 +186,13 @@ set id [waveform add -signals [subst  {
 	{[format {ddr4_test.ext_memory_test_blk.aresetn_fast}]}
 	} ]]
 set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_awsize[2:0]}]}
+	{[format {ddr4_test.ext_memory_test_blk.main_machine_blk.arid[3:0]}]}
 	} ]]
 set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_awid[3:0]}]}
+	{[format {ddr4_test.ext_memory_test_blk.mon_streams_blk.error_detect}]}
 	} ]]
 set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_awburst[1:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_awlock[1:0]}]}
-	} ]]
-waveform hierarchy collapse $id
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_awcache[3:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_awprot[2:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_awlen[7:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_awaddr[30:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_awvalid}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_awready}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_wdata[511:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_wstrb[63:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_wvalid}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_wready}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_wlast}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_bvalid}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_bready}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_bid[3:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_bresp[1:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_arid[3:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_araddr[30:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_arlen[7:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_arsize[2:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_arburst[1:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_arlock[1:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_arcache[3:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_arprot[2:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_arvalid}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_arready}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_rid[3:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_rdata[511:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_rresp[1:0]}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_rlast}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_rvalid}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.ext_memory_test_blk.m_axi_rready}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.axi_mem_target_blk.Leng_Error}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.axi_mem_target_blk.ID_Error}]}
-	} ]]
-set id [waveform add -signals [subst  {
-	{[format {ddr4_test.axi_mem_target_blk.Adr_Error}]}
+	{[format {ddr4_test.ext_memory_test_blk.mon_streams_blk.data_equal}]}
 	} ]]
 
-waveform xview limits 0 71501000ps
+waveform xview limits 2820515010ps 2820902430ps

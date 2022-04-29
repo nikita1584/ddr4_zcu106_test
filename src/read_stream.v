@@ -41,7 +41,7 @@ module read_stream(
 	reg [3:0]arid_r;
 
 	//assign finish = (rd_sm == S_DATA) && RLAST && RVALID && RREADY;
-	assign finish = (rd_sm == S_ADDR) && ARVALID && ARREADY;
+	assign finish = ARVALID && ARREADY; //(rd_sm == S_ADDR) && 
 
 	assign ARLOCK = 2'b00;
 	assign ARBURST = 2'b01;
@@ -51,14 +51,14 @@ module read_stream(
 	assign ARADDR = addr;
 	assign ARLEN = burst_length - 8'h01;
 	assign ARID = arid_r;
-	assign ARVALID = rd_sm == S_ADDR;
-	assign RREADY = rd_sm == S_DATA;
+	assign ARVALID = en;//rd_sm == S_ADDR;
+	assign RREADY = rd_sm != S_IDLE;//rd_sm == S_DATA;
 
 	always @(posedge clk)
 	begin
 		if(reset)
 			arid_r <= 4'h0;
-		else if(RLAST && RVALID && RREADY)
+		else if(ARREADY && ARVALID)
 			arid_r <= arid_r + 4'h1;
 	end
 
@@ -85,6 +85,5 @@ module read_stream(
 					rd_sm_ns = S_IDLE;
 		endcase
 	end
-
 
 endmodule

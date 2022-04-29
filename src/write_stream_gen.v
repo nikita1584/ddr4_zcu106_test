@@ -103,7 +103,7 @@ module write_stream_gen(
 					stream_num, iter_num, counter+16'h03, stream_num, iter_num, counter+16'h02,
 					stream_num, iter_num, counter+16'h01, stream_num, iter_num, counter+16'h00};
 
-	assign finish = wr_sm == S_CONF;
+	assign finish = (wr_sm == S_CONF) && BREADY && BVALID;
 	assign adr_neg = AWVALID && AWREADY;
 
 	always @(posedge clk)

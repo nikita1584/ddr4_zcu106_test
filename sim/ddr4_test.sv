@@ -76,8 +76,11 @@ module ddr4_test();
     en = 1'b1;
 
     $display ("\n",$time,  ,"   AXI-DDR4 TEST STARTED   \n");
-    repeat(30_000_000) @(posedge clk);
-    //repeat(400_000_000) @(posedge clk); //not enough memory
+    repeat(3_000_000) @(posedge clk);
+    if(ext_memory_test_blk.mon_streams_blk.error_detect)
+      $display ("\n",$time,  ,"   ERROR. TEST FAILED   \n");
+    else
+      $display ("\n",$time,  ,"   SUCCESS. TEST FINISHED   \n");
     $finish;
   end
 
@@ -145,11 +148,57 @@ ext_memory_test_blk(
  
   /// data channel
   .m_axi_rready(RREADY),
+  .m_axi_rid(RID),
   .m_axi_rdata(RDATA),
   .m_axi_rresp(RRESP),
   .m_axi_rlast(RLAST),
   .m_axi_rvalid(RVALID)
   );
+
+axi_target_bfm axi_target_bfm_blk(
+  .en(en),
+  .clk(clk),
+  .reset(reset),
+  /*
+  .AWREADY(AWREADY),
+  .AWADDR(AWADDR),
+  .AWID(AWID),
+  .AWLEN(AWLEN),
+  //.AWSIZE(AWSIZE),
+  //.AWBURST(AWBURST),
+  //.AWLOCK(AWLOCK),
+  //.AWCACHE(AWCACHE),
+  //.AWPROT(AWPROT),
+  .AWVALID(AWVALID),
+ 
+  /// data channel
+  .WREADY(WREADY),
+  .WID(4'h0),
+  .WDATA(WDATA),
+  .WSTRB(WSTRB),
+  .WLAST(WLAST),
+  .WVALID(WVALID),
+ 
+  /// responce channel
+  .BID(BID),
+  .BRESP(BRESP),
+  .BVALID(BVALID),
+  .BREADY(BREADY),
+*/
+  .ARREADY(ARREADY),
+  .ARADDR(ARADDR),
+  .ARID(ARID),
+  .ARLEN(ARLEN),
+  .ARVALID(ARVALID),
+  .RREADY(RREADY),
+  .RID(RID),
+  .RDATA(RDATA),
+  .RRESP(RRESP),
+  .RLAST(RLAST),
+  .RVALID(RVALID)
+
+  );
+
 
 axi_mem_target axi_mem_target_blk(
   .clk(clk),
@@ -177,19 +226,20 @@ axi_mem_target axi_mem_target_blk(
   .BID(BID),
   .BRESP(BRESP),
   .BVALID(BVALID),
-  .BREADY(BREADY),
-
+  .BREADY(BREADY)
+/*
   .ARREADY(ARREADY),
   .ARADDR(ARADDR),
   .ARID(ARID),
   .ARLEN(ARLEN),
   .ARVALID(ARVALID),
   .RREADY(RREADY),
-  .RID(),
+  .RID(RID),
   .RDATA(RDATA),
   .RRESP(RRESP),
   .RLAST(RLAST),
   .RVALID(RVALID)
+  */
   );
 
 /*

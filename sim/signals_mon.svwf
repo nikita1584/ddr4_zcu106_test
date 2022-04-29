@@ -1,0 +1,116 @@
+
+#
+# Mnemonic Maps
+#
+mmap new -reuse -name {Boolean as Logic} -radix %b -contents {{%c=FALSE -edgepriority 1 -shape low}
+{%c=TRUE -edgepriority 1 -shape high}}
+mmap new -reuse -name {Example Map} -radix %x -contents {{%b=11???? -bgcolor orange -label REG:%x -linecolor yellow -shape bus}
+{%x=1F -bgcolor red -label ERROR -linecolor white -shape EVENT}
+{%x=2C -bgcolor red -label ERROR -linecolor white -shape EVENT}
+{%x=* -label %x -linecolor gray -shape bus}}
+
+array unset createdGroup
+array set createdGroup {}
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.stream_num[7:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.ARID[3:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.ARADDR[31:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.ARLEN[7:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.ARVALID}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.ARREADY}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.RID[3:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.RDATA[511:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.mon_streams_blk.data_ok[511:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.RREADY}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.RVALID}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.RLAST}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.mon_streams_blk.data_equal}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.mon_streams_blk.error_detect}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.axi_target_bfm_blk.count_data[3:0]}]}
+	} ]]
+waveform format $id -radix %d
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.RRESP[1:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.clk}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.en}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.rd_addr[31:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.rd_burst_length[7:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.rd_finish}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.reset}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.axi_target_bfm_blk.rd_sm_adr[3:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.axi_target_bfm_blk.rd_sm_adr_ns[3:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.axi_target_bfm_blk.reset}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.axi_target_bfm_blk.rd_sm_data[3:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.axi_target_bfm_blk.start_data[7:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.mon_streams_blk.stream_cnt[15:0]}]}
+	} ]]
+waveform format $id -radix %x
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.axi_target_bfm_blk.rdata_cnt[15:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.mon_streams_blk.new_stream_num}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.mon_streams_blk.stream_num[7:0]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.axi_target_bfm_blk.rlast_counter[0:15]}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {mon_streams_test.axi_target_bfm_blk.rlast_counter[mon_streams_test.axi_target_bfm_blk.RID]}]}
+	} ]]
+
+waveform xview limits 66898300ps 500643100ps
