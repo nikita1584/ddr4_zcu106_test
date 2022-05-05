@@ -76,7 +76,11 @@ module ddr4_test();
     en = 1'b1;
 
     $display ("\n",$time,  ,"   AXI-DDR4 TEST STARTED   \n");
-    repeat(3_000_000) @(posedge clk);
+    
+    wait(ext_memory_test_blk.main_machine_blk.wr_stream_num == 8'h0B);
+    wait(ext_memory_test_blk.main_machine_blk.rd_stream_num == 8'h0B);
+    wait(ext_memory_test_blk.main_machine_blk.rd_stream_num == 8'h00);
+         
     if(ext_memory_test_blk.mon_streams_blk.error_detect)
       $display ("\n",$time,  ,"   ERROR. TEST FAILED   \n");
     else

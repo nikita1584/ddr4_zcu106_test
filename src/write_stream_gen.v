@@ -159,7 +159,6 @@ module write_stream_gen(
 
 	always @(posedge clk)
 	begin
-		//if(wr_sm == S_IDLE | wr_sm == S_CONF)
 		if(reset || ~en)
 			counter <= 'd0;
 		else if((wr_sm == S_DATA) && WREADY && WVALID)

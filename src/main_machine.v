@@ -48,13 +48,9 @@ module main_machine(
 	(* mark_debug = "true" *)reg [3:0]wr_burst_length;
 	(* mark_debug = "true" *)reg [11:0]wr_64b_counter;
 	(* mark_debug = "true" *)wire [11:0]wr_boundary_4k;
-	//(* mark_debug = "true" *)wire [15:0]wr_boundary_4k;
 	(* mark_debug = "true" *)wire [15:0]stream_size;
 	(* mark_debug = "true" *)reg dir_wr_end;
 	(* mark_debug = "true" *)wire [31:0]random;
-	//reg [31:0]wr_addr;
-	//230400 == 28800*8
-	//'d28800 == 'h7080 dwords
 
 	(* mark_debug = "true" *)reg [3:0]main_wr_sm_ns;
 	(* mark_debug = "true" *)reg [3:0]main_wr_sm;
@@ -71,25 +67,12 @@ module main_machine(
 	(* mark_debug = "true" *)reg [7:0]rd_burst_length;
 	reg [3:0]arid;
 
-	//reg [15:0]wr_boundary_4k_reg;
-	//reg [15:0]wr_burst_length_4k_reg;
-	//reg adr_neg_d;
-
 	assign wr_en = (main_wr_sm != S_IDLE_WR) && (main_wr_sm != S_INC_STR_WR)
 		&& (main_wr_sm_ns != S_INC_STR_WR)
 	`ifdef SIM
 		&& (wr_iter_num < 1)
 	`endif
 		;
-
-	//always @(posedge clk)
-	//	wr_boundary_4k_reg <= 16'h040 * ((wr_64b_counter) / 16'h040 + 16'h0001);
-
-	//always @(posedge clk)
-	//	wr_burst_length_4k_reg <= wr_boundary_4k % wr_64b_counter;
-
-	//always @(posedge clk)
-	//	adr_neg_d <= adr_neg;
 
 	assign steam_wr_end = wr_64b_counter == stream_size;
 	assign stream_size = WRITE_STREAM_MAXSIZE / 64; // size in 64 bytes (512/8)
@@ -165,18 +148,12 @@ module main_machine(
 				if(steam_wr_end)
 					main_wr_sm_ns = S_INC_STR_WR;
 			S_INC_STR_WR:
-			//	if(stream_num == 16'd143)
-			//		main_wr_sm_ns = S_RAND_WR;
-			//	else
 					main_wr_sm_ns = S_DIR_WR;
-			//S_RAND_WR:
-			//	main_wr_sm_ns = S_RAND_WR;
 		endcase
 	end
 
 	//----------------------READ---------------------------------
 	assign stream_rd_end = ((rd_64b_counter + rd_burst_length) == stream_size) && rd_finish;
-	//assign stream_rd_end = 0;
 	assign rd_addr = ((rd_64b_counter * 8) << 3) | (rd_stream_num << (STREAM_ADDR_SHIFT + STREAM_ADDR_OFFSET));
 	assign rd_boundary_4k = 16'h040 * ((rd_64b_counter + rd_burst_length) / 16'h040 + 16'h0001);
 	//-----------------------------------------------------------
@@ -192,30 +169,6 @@ module main_machine(
 		else if(rd_finish && ((rd_boundary_4k - rd_64b_counter - READ_BURST_LEN / 64) <= (READ_BURST_LEN / 64)) && (rd_64b_counter > 0))
 			rd_burst_length <= rd_boundary_4k - rd_64b_counter - READ_BURST_LEN / 64;
 	end
-	
-	/*
-	always @(posedge clk)
-	begin
-		if(reset)
-			rd_burst_length <= 8'h14;
-		else if(rd_finish && (rd_addr[17:0] == 18'h37F00))
-			rd_burst_length <= 8'h10;
-		else if(rd_finish && ((arid == 4'h2) || (arid == 4'h6) || (arid == 4'ha) || (arid == 4'he)))
-			rd_burst_length <= 8'h4;
-		else if(rd_finish)
-			rd_burst_length <= 8'h14;
-	end
-	*/
-	
-	/*
-	assign rd_burst_length = ()
-		else if(rd_finish && (rd_addr[17:0] == 18'h38000))
-			rd_burst_length <= 8'h10;
-		else if(rd_finish && ((arid == 4'h3) || (arid == 4'h7) || (arid == 4'hb) || (arid == 4'hf)))
-			rd_burst_length <= 8'h4;
-		else if(rd_finish)
-			rd_burst_length <= 8'h10;
-			*/
 	//-----------------------------------------------------------
 	always @(posedge clk)
 	begin
@@ -250,8 +203,13 @@ module main_machine(
 	begin
 		if(reset)
 			rd_en <= 1'b0;
+		`ifdef SIMULATION
+		else if(wr_stream_num > 8'h0B)
+			rd_en <= 1'b1;
+		`else
 		else if(wr_iter_num != wr_iter_num_d)
 			rd_en <= 1'b1;
+		`endif
 	end
 	//-----------------------------------------------------------
 	always @(posedge clk)

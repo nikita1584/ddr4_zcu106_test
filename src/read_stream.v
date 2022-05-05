@@ -40,7 +40,6 @@ module read_stream(
 	(* mark_debug = "true" *)reg [3:0]rd_sm_ns;
 	reg [3:0]arid_r;
 
-	//assign finish = (rd_sm == S_DATA) && RLAST && RVALID && RREADY;
 	assign finish = ARVALID && ARREADY; //(rd_sm == S_ADDR) && 
 
 	assign ARLOCK = 2'b00;

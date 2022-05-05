@@ -40,20 +40,10 @@ module mon_streams(
 
 	assign stream_num = addr[RID][STREAM_ADDR_SHIFT + STREAM_ADDR_OFFSET + 7:
 		STREAM_ADDR_SHIFT + STREAM_ADDR_OFFSET];
-	//assign new_stream_num = ARADDR[STREAM_ADDR_SHIFT + STREAM_ADDR_OFFSET + 7:
-	//	STREAM_ADDR_SHIFT + STREAM_ADDR_OFFSET] != stream_num;
-	assign new_stream_num = ((stream_cnt == 16'hE0F0) /*|| ((RID == finish_arid) && finish_addr)*/) && RREADY && RVALID && RLAST;
+
+	assign new_stream_num = (stream_cnt == 16'hE0F0) && RREADY && RVALID && RLAST;
 	assign iter_num = RDATA[55:48];
-	/*
-	assign data_ok = {stream_num, iter_num, stream_cnt[rid]+16'h0F, stream_num, iter_num, stream_cnt[rid]+16'h0E,
-					stream_num, iter_num, stream_cnt[rid]+16'h0D, stream_num, iter_num, stream_cnt[rid]+16'h0C,
-					stream_num, iter_num, stream_cnt[rid]+16'h0B, stream_num, iter_num, stream_cnt[rid]+16'h0A,
-					stream_num, iter_num, stream_cnt[rid]+16'h09, stream_num, iter_num, stream_cnt[rid]+16'h08,
-					stream_num, iter_num, stream_cnt[rid]+16'h07, stream_num, iter_num, stream_cnt[rid]+16'h06,
-					stream_num, iter_num, stream_cnt[rid]+16'h05, stream_num, iter_num, stream_cnt[rid]+16'h04,
-					stream_num, iter_num, stream_cnt[rid]+16'h03, stream_num, iter_num, stream_cnt[rid]+16'h02,
-					stream_num, iter_num, stream_cnt[rid]+16'h01, stream_num, iter_num, stream_cnt[rid]+16'h00};
-*/
+
 	assign data_ok = {stream_num, iter_num, stream_cnt+16'h0F, stream_num, iter_num, stream_cnt+16'h0E,
 					stream_num, iter_num, stream_cnt+16'h0D, stream_num, iter_num, stream_cnt+16'h0C,
 					stream_num, iter_num, stream_cnt+16'h0B, stream_num, iter_num, stream_cnt+16'h0A,
@@ -107,18 +97,6 @@ module mon_streams(
 		else if(RVALID && RREADY)
 			rid <= RID;
 	end
-/*
-	always @(posedge clk)
-	begin
-		if(reset)
-			for(i = 0; i < 16; i = i + 1)
-				stream_cnt[i] <= 16'h0;
-		else if(new_stream_num && ARREADY && ARVALID)
-			stream_cnt[arid] <= 16'h0;
-		else if(RREADY && RVALID)
-			stream_cnt[rid] <= stream_cnt[rid] + 16'h0010;
-	end
-*/
 
 	always @(posedge clk)
 	begin
